@@ -115,6 +115,15 @@ final class Papi_Loader extends Papi_Core_Container {
 
 		// The plugin basename that is used in actions to match so right plugin is modified.
 		$this->define( 'PAPI_PLUGIN_BASENAME', basename( dirname( __DIR__ ) ) . '/papi-loader.php' );
+		
+		// Remember the language currently selected in WP admin
+		if(!session_id()) {
+			session_start();
+		}
+				
+		define( 'PAPI_LANG', $_GET['lang'] ?? $_SESSION['admin_lang'] ?? 'en');
+
+		$_SESSION['admin_lang'] = PAPI_LANG;
 	}
 
 	/**

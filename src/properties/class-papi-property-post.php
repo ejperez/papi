@@ -33,7 +33,7 @@ class Papi_Property_Post extends Papi_Property {
 				'meta_value'     => $value,
 				'posts_per_page' => 1,
 				'post_type'      => $this->get_setting( 'post_type' ),
-				'lang' 			 => $_COOKIE['papi_lang'] ?? 'sv'
+				'lang' 			 => PAPI_LANG
 			];
 
 			$query = new WP_Query( $args );
@@ -144,7 +144,7 @@ class Papi_Property_Post extends Papi_Property {
 			'no_found_rows'          => true,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
-			'lang' 					 => $_COOKIE['papi_lang'] ?? 'sv'
+			'lang' 					 => PAPI_LANG
 		] );
 
 		$posts = ( new WP_Query( $args ) )->posts;
