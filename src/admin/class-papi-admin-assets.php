@@ -48,10 +48,10 @@ final class Papi_Admin_Assets {
 	 */
 	public function enqueue_locale() {
 		wp_localize_script( 'papi-main', 'papiL10n', [
-			'close'         => __( 'Close', 'default' ),
-			'edit'          => __( 'Edit', 'default' ),
-			'new'           => __( 'New', 'default' ),
-			'remove'        => __( 'Remove', 'default' ),
+			'close'         => __( 'Close' ),
+			'edit'          => __( 'Edit' ),
+			'new'           => __( 'New' ),
+			'remove'        => __( 'Remove' ),
 			'requiredError' => __( 'This fields are required:', 'papi' ),
 		] );
 	}

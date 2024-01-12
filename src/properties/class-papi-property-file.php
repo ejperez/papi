@@ -24,15 +24,15 @@ class Papi_Property_File extends Papi_Property {
 	 *
 	 * @var string
 	 */
-	protected $file_type = 'file';
+	protected $file_type  = 'file';
 
 	/**
 	 * Format the value of the property before it's returned
 	 * to WordPress admin or the site.
 	 *
-	 * @param mixed  $value
-	 * @param string $slug
-	 * @param int    $post_id
+	 * @param  mixed  $value
+	 * @param  string $slug
+	 * @param  int    $post_id
 	 *
 	 * @return mixed
 	 */
@@ -45,50 +45,44 @@ class Papi_Property_File extends Papi_Property {
 		if ( is_numeric( $value ) ) {
 			$meta = wp_get_attachment_metadata( $value );
 
-			if ( $meta === false ) {
-				$meta = [];
-			}
+			if ( isset( $meta ) && ! empty( $meta ) ) {
+				$att  = get_post( $value );
+				$mine = [
+					'alt'         => trim( strip_tags( get_post_meta( $value, '_wp_attachment_image_alt', true ) ) ),
+					'caption'     => trim( strip_tags( $att->post_excerpt ) ),
+					'description' => trim( strip_tags( $att->post_content ) ),
+					'id'          => intval( $value ),
+					'is_image'    => (bool) wp_attachment_is_image( $value ),
+					'title'       => esc_html( $att->post_title ),
+					'url'         => wp_get_attachment_url( $value ),
+				];
 
-			$alt = get_post_meta( $value, '_wp_attachment_image_alt', true );
+				$meta = is_array( $meta ) ? $meta : ['file' => $meta];
 
-			$att  = get_post( $value );
-
-			if ( is_null( $att ) ) {
-				return (int) $value;
-			}
-
-			$mine = [
-				'alt'         => trim( wp_strip_all_tags( $alt ? $alt : '' ) ),
-				'caption'     => trim( wp_strip_all_tags( isset( $att->post_excerpt ) ? $att->post_excerpt : '' ) ),
-				'description' => trim( wp_strip_all_tags( isset( $att->post_content ) ? $att->post_content : '' ) ),
-				'id'          => intval( $value ),
-				'is_image'    => (bool) wp_attachment_is_image( $value ),
-				'title'       => esc_html( isset( $att->post_title ) ? $att->post_title : '' ),
-				'url'         => wp_get_attachment_url( $value ),
-			];
-
-			if ( isset( $meta['sizes'] ) ) {
-				foreach ( array_keys( $meta['sizes'] ) as $size ) {
-					$src = wp_get_attachment_image_src( $mine['id'], $size );
-					if ( $src ) {
-						$meta['sizes'][ $size ]['url'] = $src[0];
+				if ( isset( $meta['sizes'] ) ) {
+					foreach ( array_keys( $meta['sizes'] ) as $size ) {
+						if ( $src = wp_get_attachment_image_src( $mine['id'], $size ) ) {
+							$meta['sizes'][$size]['url'] = $src[0];
+						}
 					}
 				}
+
+				$value = (object) array_merge( $meta, $mine );
+
+				if ( ! papi_is_admin() && $this->get_setting( 'fields' ) === 'ids' ) {
+					return $this->get_file_value( $value );
+				}
+
+				return $value;
 			}
 
-			$value = (object) array_merge( $meta, $mine );
-
-			if ( ! papi_is_admin() && $this->get_setting( 'fields' ) === 'ids' ) {
-				return $att->ID;
-			}
-
-			return $value;
+			return (int) $value;
 		}
 
 		// Multiple files.
 		if ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
-				$value[ $k ] = $this->format_value( $v, $slug, $post_id );
+				$value[$k] = $this->format_value( $v, $slug, $post_id );
 			}
 
 			return $value;
@@ -102,9 +96,33 @@ class Papi_Property_File extends Papi_Property {
 	}
 
 	/**
+	 * Get default settings.
+	 *
+	 * @return array
+	 */
+	public function get_default_settings() {
+		return [
+			'multiple' => false,
+			'meta_key' => ''
+		];
+	}
+
+	/**
+	 * Get labels.
+	 *
+	 * @return array
+	 */
+	public function get_labels() {
+		return [
+			'add'     => __( 'Add file', 'papi' ),
+			'no_file' => __( 'No file selected', 'papi' )
+		];
+	}
+
+	/**
 	 * Get file by id or meta value.
 	 *
-	 * @param mixed $value
+	 * @param  mixed $value
 	 *
 	 * @return int
 	 */
@@ -122,7 +140,7 @@ class Papi_Property_File extends Papi_Property {
 				'meta_value'     => $value,
 				'posts_per_page' => 1,
 				'post_type'      => 'attachment',
-				'post_status'    => 'any',
+				'post_status'    => 'any'
 			];
 
 			$query = new WP_Query( $args );
@@ -142,7 +160,7 @@ class Papi_Property_File extends Papi_Property {
 	/**
 	 * Get matching value based on key from a file.
 	 *
-	 * @param mixed $value
+	 * @param  mixed $value
 	 *
 	 * @return mixed
 	 */
@@ -165,18 +183,6 @@ class Papi_Property_File extends Papi_Property {
 	}
 
 	/**
-	 * Get default settings.
-	 *
-	 * @return array
-	 */
-	public function get_default_settings() {
-		return [
-			'multiple' => false,
-			'meta_key' => '',
-		];
-	}
-
-	/**
 	 * Render property html.
 	 */
 	public function html() {
@@ -195,7 +201,7 @@ class Papi_Property_File extends Papi_Property {
 
 		if ( $settings->multiple ) {
 			$css_classes .= ' multiple ';
-			$slug        .= '[]';
+			$slug .= '[]';
 			$show_button = true;
 		}
 		?>
@@ -210,7 +216,7 @@ class Papi_Property_File extends Papi_Property {
 				papi_render_html_tag( 'input', [
 					'name'  => esc_attr( $slug ),
 					'type'  => 'hidden',
-					'value' => '',
+					'value' => ''
 				] );
 
 				papi_render_html_tag( 'button', [
@@ -218,7 +224,7 @@ class Papi_Property_File extends Papi_Property {
 					'class'     => 'button',
 					'type'      => 'button',
 
-					esc_html( $labels['add'] ),
+					esc_html( $labels['add'] )
 				] );
 				?>
 			</p>
@@ -244,13 +250,13 @@ class Papi_Property_File extends Papi_Property {
 										<?php
 										papi_render_html_tag( 'img', [
 											'alt' => esc_attr( $file->alt ),
-											'src' => esc_attr( $url ),
+											'src' => esc_attr( $url )
 										] );
 
 										papi_render_html_tag( 'input', [
 											'name'  => esc_attr( $slug ),
 											'type'  => 'hidden',
-											'value' => $file->id,
+											'value' => $file->id
 										] );
 
 										if ( ! isset( $file->file ) && isset( $file->url ) ) {
@@ -273,19 +279,18 @@ class Papi_Property_File extends Papi_Property {
 			</div>
 			<div class="clear"></div>
 		</div>
-		<?php
+	<?php
 	}
 
 	/**
-	 * Get labels.
+	 * Check if the given id is a attachment post type or not.
 	 *
-	 * @return array
+	 * @param  int $id
+	 *
+	 * @return bool
 	 */
-	public function get_labels() {
-		return [
-			'add'     => __( 'Add file', 'papi' ),
-			'no_file' => __( 'No file selected', 'papi' ),
-		];
+	protected function is_attachment( $id ) {
+		return get_post_type( (int) $id ) === 'attachment';
 	}
 
 	/**
@@ -313,18 +318,32 @@ class Papi_Property_File extends Papi_Property {
 	}
 
 	/**
+	 * Setup actions.
+	 */
+	protected function setup_actions() {
+		add_action( 'admin_head', [$this, 'render_file_template'] );
+	}
+
+	/**
+	 * Setup filters.
+	 */
+	protected function setup_filters() {
+		add_action( 'wp_get_attachment_metadata', [$this, 'wp_get_attachment_metadata'], 10, 2 );
+	}
+
+	/**
 	 * Save file with a meta value or id.
 	 *
-	 * @param mixed  $values
-	 * @param string $slug
-	 * @param int    $post_id
+	 * @param  mixed  $values
+	 * @param  string $slug
+	 * @param  int    $post_id
 	 *
 	 * @return string
 	 */
 	public function update_value( $values, $slug, $post_id ) {
 		if ( ! is_array( $values ) ) {
 			$values = $this->get_file_value( (object) [
-				'id' => $values,
+				'id' => $values
 			] );
 
 			if ( empty( $values ) ) {
@@ -339,8 +358,8 @@ class Papi_Property_File extends Papi_Property {
 				continue;
 			}
 
-			$values[ $index ] = $this->get_file_value( (object) [
-				'id' => $value,
+			$values[$index] = $this->get_file_value( (object) [
+				'id' => $value
 			] );
 		}
 
@@ -350,8 +369,8 @@ class Papi_Property_File extends Papi_Property {
 	/**
 	 * Get attachment metadata.
 	 *
-	 * @param mixed $data
-	 * @param int   $post_id
+	 * @param  mixed $data
+	 * @param  int   $post_id
 	 *
 	 * @return mixed
 	 */
@@ -361,30 +380,5 @@ class Papi_Property_File extends Papi_Property {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Check if the given id is a attachment post type or not.
-	 *
-	 * @param int $id
-	 *
-	 * @return bool
-	 */
-	protected function is_attachment( $id ) {
-		return get_post_type( (int) $id ) === 'attachment';
-	}
-
-	/**
-	 * Setup actions.
-	 */
-	protected function setup_actions() {
-		add_action( 'admin_head', [ $this, 'render_file_template' ] );
-	}
-
-	/**
-	 * Setup filters.
-	 */
-	protected function setup_filters() {
-		add_action( 'wp_get_attachment_metadata', [ $this, 'wp_get_attachment_metadata' ], 10, 2 );
 	}
 }

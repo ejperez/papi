@@ -24,14 +24,6 @@ class Papi_Property_Term extends Papi_Property {
 	public function format_value( $value, $slug, $term_id ) {
 		$meta_key = $this->get_setting( 'meta_key' );
 
-		if ( is_string( $value ) ) {
-			$value = trim( $value );
-		}
-
-		if ( papi_is_empty( $value ) ) {
-			return $this->default_value;
-		}
-
 		if ( empty( $meta_key ) ) {
 			if ( is_numeric( $value ) && intval( $value ) !== 0 ) {
 				$term_id = $value;
@@ -126,9 +118,9 @@ class Papi_Property_Term extends Papi_Property {
 	protected function get_terms( $taxonomy ) {
 		// Prepare arguments for get_terms.
 		$query = $this->get_setting( 'query' );
-		$args  = array_merge( [
+		$args  = array_merge( $query, [
 			'fields' => 'id=>name'
-		], $query );
+		] );
 
 		$terms = [];
 		if ( taxonomy_exists( $taxonomy ) ) {
@@ -251,7 +243,7 @@ class Papi_Property_Term extends Papi_Property {
 				data-width="100%">
 
 				<?php if ( ! is_null( $settings->placeholder ) ): ?>
-					<option value="<?php echo esc_attr( $this->get_option( 'default', '' ) ); ?>"><?php echo esc_html( $placeholder ); ?></option>
+					<option value="<?php echo esc_attr( $this->get_option( 'default', ' ' ) ); ?>"><?php echo esc_html( $placeholder ); ?></option>
 				<?php endif; ?>
 
 				<?php foreach ( $taxonomies as $taxonomy ) : ?>

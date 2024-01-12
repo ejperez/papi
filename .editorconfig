@@ -18,6 +18,3 @@ trim_trailing_whitespace = false
 [Makefile]
 indent_style = tab
 indent_size = 8
-
-[*.{js,jsx,ts,tsx,vue}]
-quote_type = single

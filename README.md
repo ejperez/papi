@@ -2,10 +2,11 @@
 
 ![Papi](https://cloud.githubusercontent.com/assets/14610/9073902/16a6d906-3b05-11e5-9287-5644a96e9a82.png)
 
+[![Build Status](https://travis-ci.org/wp-papi/papi.svg?branch=master)](https://travis-ci.org/wp-papi/papi)
+[![Coverage Status](https://img.shields.io/codecov/c/github/wp-papi/papi.svg?style=flat)](https://codecov.io/github/wp-papi/papi)
 [![Latest Version](https://img.shields.io/github/release/wp-papi/papi.svg?style=flat)](https://github.com/wp-papi/papi/releases)
 [![License](https://img.shields.io/packagist/l/wp-papi/papi.svg)](https://packagist.org/packages/wp-papi/papi)
 [![Gitter](https://badges.gitter.im/wp-papi/papi.svg)](https://gitter.im/wp-papi/papi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 > `master` is unsafe. `3.x` is the stable branch.
 
@@ -17,7 +18,9 @@ So we though why don’t use the same approach in WordPress? Papi is today runni
 
 ## A message from the author
 
-v3.2.0 will likely be the last release I plan to work on as the core maintainer of Papi since my focus has shifted from WordPress to doing more JavaScript and Go projects. I hope you understand my decision to step back from the project, if you have any questions or would be interested in take over some of the maintenance of the project please let me know. I will still be around answering questions and helping any new maintainers. Some bug fixes and/or pull request may be added (but no new versions) since me and my colleagues use Papi internally and will be continuing doing it.
+~~v3.2.0 will likely be the last release I plan to work on as the core maintainer of Papi since my focus has shifted from WordPress to doing more JavaScript and Go projects. I hope you understand my decision to step back from the project, if you have any questions or would be interested in take over some of the maintenance of the project please let me know. I will still be around answering questions and helping any new maintainers. Some bug fixes and/or pull request may be added (but no new versions) since me and my colleagues use Papi internally and will be continuing doing it.~~
+
+A new core team is taking over the development and working on a new version. More information is coming soon!
 
 ## Installation
 
@@ -31,7 +34,7 @@ Or manually add it to your `composer.json`:
 
 ```json
 "require": {
-  "php": "^^7.4",
+  "php": "^5.6 || ^7.0",
   "wordpress": "^4.6",
   "wp-papi/papi": "^3.2"
 }
