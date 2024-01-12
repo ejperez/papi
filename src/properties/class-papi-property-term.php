@@ -36,7 +36,9 @@ class Papi_Property_Term extends Papi_Property {
 				'hide_empty' => false,
 				'taxonomy'   => $this->get_setting( 'taxonomy' ),
 				'number'     => 1,
-				'lang' 		 => PAPI_LANG
+				'lang' 		 => PAPI_LANG,
+				'orderby' 	 => 'name',
+				'order' 	 => 'ASC',
 			];
 
 			$terms = get_terms( $args );
@@ -122,7 +124,9 @@ class Papi_Property_Term extends Papi_Property {
 		$args  = array_merge( $query, [
 			'fields' 	 => 'id=>name',
 			'lang' 		 => PAPI_LANG,
-			'hide_empty' => false
+			'hide_empty' => false,
+			'orderby'	 => 'name',
+			'order' 	 => 'ASC',
 		] );
 
 		$terms = [];

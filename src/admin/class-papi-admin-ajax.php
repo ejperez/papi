@@ -120,7 +120,10 @@ class Papi_Admin_Ajax {
 			'post_type'              => ['post'],
 			'no_found_rows'          => true,
 			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false
+			'update_post_term_cache' => false,
+			'lang' 					 => PAPI_LANG,
+			'orderby'				 => 'title',
+			'order'					 => 'ASC'
 		], $args ) ) )->posts;
 
 		$posts = array_filter( $posts, function ( $post ) {
