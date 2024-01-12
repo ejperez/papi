@@ -35,7 +35,8 @@ class Papi_Property_Term extends Papi_Property {
 				'meta_value' => $value,
 				'hide_empty' => false,
 				'taxonomy'   => $this->get_setting( 'taxonomy' ),
-				'number'     => 1
+				'number'     => 1,
+				'lang' 		 => PAPI_LANG
 			];
 
 			$terms = get_terms( $args );
@@ -119,7 +120,9 @@ class Papi_Property_Term extends Papi_Property {
 		// Prepare arguments for get_terms.
 		$query = $this->get_setting( 'query' );
 		$args  = array_merge( $query, [
-			'fields' => 'id=>name'
+			'fields' 	 => 'id=>name',
+			'lang' 		 => PAPI_LANG,
+			'hide_empty' => false
 		] );
 
 		$terms = [];
