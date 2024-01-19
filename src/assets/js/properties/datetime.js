@@ -63,7 +63,7 @@ class Datetime {
    */
   updateSelect (e) {
     e.preventDefault();
-    this.pikaday($(e.currentTarget).prev().find('.papi-property-datetime'));
+    this.pikaday($(e.currentTarget).parent().find('.papi-property-datetime'));
   }
 }
 
