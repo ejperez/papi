@@ -139,6 +139,8 @@ class Papi_Property_Post extends Papi_Property {
 			$post_type = array_shift( $post_type );
 		}
 
+		$get_post_type = is_array( $post_type ) ? $post_type[0] : $post_type;
+		$lang = $get_post_type == 'scen' ? 'all' : PAPI_LANG;
 		// Prepare arguments for WP_Query.
 		$args = array_merge( $query, [
 			'post_status'            => 'any',
@@ -146,7 +148,7 @@ class Papi_Property_Post extends Papi_Property {
 			'no_found_rows'          => true,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
-			'lang' 					 => PAPI_LANG,
+			'lang' 					 => $lang,
 			'orderby'				 => 'title',
 			'order'					 => 'ASC'
 		] );
