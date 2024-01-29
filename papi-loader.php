@@ -5,7 +5,7 @@
  * Description: Page Type API with custom fields (forked)
  * Author: EJ Perez
  * Author URI: https://frozzare.com
- * Version: 3.4.0-dev
+ * Version: 3.4.3-dev
  * Plugin URI: https://wp-papi.github.io
  * Textdomain: papi
  * Domain Path: /languages/
